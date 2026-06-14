@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JUMIA JR SHOP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-100 text-gray-900 font-sans">
+  <!-- NOTE: Page 100% HTML statique (sans React/JSX). -->
+
+  <div class="bg-orange-600 text-white text-xs py-1 px-4 hidden sm:block">
+    <div class="max-w-7xl mx-auto flex justify-between">
+      <span>Livraison disponible dans toute la ville</span>
+      <span>Aide &amp; Support · Suivre ma commande</span>
+    </div>
+  </div>
+
+  <header class="bg-white shadow-sm sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
+      <div class="text-2xl font-extrabold tracking-tight">
+        <span class="text-orange-600">Marko</span>
+        <span class="text-gray-800">Shop</span>
+      </div>
+
+      <div class="flex-1 relative">
+        <input
+          id="search"
+          type="text"
+          placeholder="Rechercher un produit, une marque..."
+          aria-label="Rechercher"
+          class="w-full border border-gray-300 rounded px-4 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+        />
+        <div class="absolute right-3 top-2.5 text-gray-400" aria-hidden="true">🔎</div>
+      </div>
+
+      <button
+        type="button"
+        class="relative flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-3 py-2 rounded transition"
+        aria-label="Voir le panier"
+        onclick="openCart()"
+      >
+        <span aria-hidden="true">🛒</span>
+        <span class="hidden sm:inline text-sm font-medium">Panier</span>
+        <span id="cart-badge" class="hidden absolute -top-2 -right-2 bg-gray-900 text-white text-xs rounded-full w-5 h-5 items-center justify-center">0</span>
+      </button>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 pb-3">
+      <label for="cat-select" class="sr-only">Catégorie</label>
+      <select id="cat-select" class="w-full md:w-72 border border-gray-300 rounded px-3 py-2 text-sm" aria-label="Choisir une catégorie"></select>
+    </div>
+  </header>
+
+  <div class="max-w-7xl mx-auto px-4 mt-4">
+    <div class="bg-gradient-to-r from-orange-600 to-orange-400 rounded-lg text-white p-6 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl sm:text-4xl font-extrabold mb-2">Grandes Promos de la Semaine</h1>
+        <p class="text-sm sm:text-base opacity-90">Jusqu'à -40% sur l'électronique, la mode et plus encore</p>
+      </div>
+      <button type="button" class="bg-white text-orange-600 font-semibold px-5 py-2.5 rounded shadow hover:bg-gray-100 transition" onclick="alert('Découvrir')">Découvrir</button>
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <h2 class="text-lg font-bold mb-3">
+      <span id="heading-cat">Produits en vedette</span>
+      <span id="articles-count" class="text-gray-400 font-normal text-sm ml-2">(0 articles)</span>
+    </h2>
+
+    <p id="empty" class="text-gray-500 text-sm py-12 text-center hidden">Aucun produit ne correspond à votre recherche.</p>
+
+    <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"></div>
+  </main>
+
+  <div id="cart-drawer" class="hidden fixed inset-0 bg-black/40 z-50">
+    <div class="absolute right-0 top-0 bg-white w-full max-w-sm h-full p-4 overflow-y-auto" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="font-bold text-lg" id="cart-title">Mon panier</h2>
+        <button type="button" class="p-1 text-gray-600 hover:text-gray-900" aria-label="Fermer" onclick="closeCart()">✕</button>
+      </div>
+
+      <div id="cart-items" class="space-y-3"></div>
+
+      <div class="border-t pt-3 mt-3">
+        <div class="flex justify-between font-bold text-base mb-3">
+          <span>Total</span>
+          <span id="cart-total">0 FCFA</span>
+        </div>
+        <button type="button" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-2.5 rounded font-semibold transition" onclick="alert('Passer la commande')">Passer la commande</button>
+      </div>
+    </div>
+
+    <button class="absolute inset-0" aria-label="Fermer le panier" onclick="closeCart()"></button>
+  </div>
+
+  <footer class="bg-gray-900 text-gray-300 text-sm mt-8 py-8">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-4 gap-6">
+      <div>
+        <h3 class="text-white font-semibold mb-2">À propos</h3>
+        <ul class="space-y-1 text-gray-400">
+          <li>Qui sommes-nous</li>
+          <li>Conditions d'utilisation</li>
+          <li>Confidentialité</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold mb-2">Aide</h3>
+        <ul class="space-y-1 text-gray-400">
+          <li>Centre d'aide</li>
+          <li>Comment commander</li>
+          <li>Suivi de commande</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold mb-2">Vendre sur MarkoShop</h3>
+        <ul class="space-y-1 text-gray-400">
+          <li>Devenir vendeur</li>
+          <li>Espace vendeur</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold mb-2">Paiement &amp; Livraison</h3>
+        <ul class="space-y-1 text-gray-400">
+          <li>Modes de paiement</li>
+          <li>Zones de livraison</li>
+        </ul>
+      </div>
+    </div>
+    <p class="text-center text-gray-500 text-xs mt-6">© 2026 JumiajrShop — Site de démonstration</p>
+  </footer>
+
+  <script>
+    const CATEGORIES = [
+      "Téléphones & Tablettes",
+      "Électronique",
+      "Mode Femme",
+      "Mode Homme",
+      "Maison & Bureau",
+      "Beauté & Santé",
+      "Supermarché",
+      "Bébé & Jouets",
+      "Sport & Loisirs",
+      "Électroménager",
+      "Véhicules",
+    ];
+
+    const PRODUCTS = [
+      { id: 1, name: "Smartphone Galaxy A15 128Go", price: 89900, oldPrice: 109900, cat: "Téléphones & Tablettes", rating: 4.3, reviews: 1240, img: "📱", badge: "-18%" },
+      { id: 2, name: "Écouteurs Bluetooth Sans Fil Pro", price: 14500, oldPrice: 22000, cat: "Électronique", rating: 4.1, reviews: 856, img: "🎧", badge: "-34%" },
+      { id: 3, name: "Robe d'été fleurie taille M", price: 12990, oldPrice: null, cat: "Mode Femme", rating: 4.5, reviews: 320, img: "👗", badge: null },
+      { id: 4, name: "Chemise homme coton slim fit", price: 9990, oldPrice: 15000, cat: "Mode Homme", rating: 4.0, reviews: 540, img: "👔", badge: "-33%" },
+      { id: 5, name: "Mixeur blender 1.5L 600W", price: 24900, oldPrice: 32000, cat: "Électroménager", rating: 4.4, reviews: 412, img: "🧃", badge: "-22%" },
+      { id: 6, name: "Lot de 6 verres en cristal", price: 8500, oldPrice: null, cat: "Maison & Bureau", rating: 4.2, reviews: 178, img: "🥂", badge: null },
+      { id: 7, name: "Crème hydratante visage 50ml", price: 5990, oldPrice: 7990, cat: "Beauté & Santé", rating: 4.6, reviews: 980, img: "🧴", badge: "-25%" },
+      { id: 8, name: "Riz parfumé 5kg", price: 6500, oldPrice: null, cat: "Supermarché", rating: 4.7, reviews: 2100, img: "🍚", badge: null },
+      { id: 9, name: "Poussette bébé pliable", price: 75000, oldPrice: 95000, cat: "Bébé & Jouets", rating: 4.3, reviews: 95, img: "👶", badge: "-21%" },
+      { id: 10, name: "Ballon de football taille 5", price: 7500, oldPrice: 9990, cat: "Sport & Loisirs", rating: 4.1, reviews: 230, img: "⚽", badge: "-25%" },
+    ];
+
+    // Étoffe le catalogue (plus léger que l'original React, mais conserve l'idée)
+    const COLORS = ["Noir", "Blanc", "Bleu", "Rouge", "Gris", "Vert", "Rose", "Or", "Argent", "Beige"];
+    const SIZES = ["S", "M", "L", "XL", "Standard", "Compact", "Pro", "Lite"];
+
+    function generateExtraProducts() {
+      const extra = [];
+      let nextId = PRODUCTS[PRODUCTS.length - 1].id + 1;
+      const variantsPerProduct = 8;
+
+      for (const base of PRODUCTS) {
+        for (let i = 0; i < variantsPerProduct; i++) {
+          const color = COLORS[(base.id + i) % COLORS.length];
+          const size = SIZES[(base.id + i * 3) % SIZES.length];
+          const priceFactor = 0.85 + ((base.id + i) % 7) * 0.05;
+          const newPrice = Math.round((base.price * priceFactor) / 100) * 100;
+          const hasDiscount = (base.id + i) % 3 !== 0;
+          const oldPrice = hasDiscount ? Math.round((newPrice * 1.25) / 100) * 100 : null;
+          const discountPct = oldPrice ? Math.round((1 - newPrice / oldPrice) * 100) : null;
+
+          extra.push({
+            id: nextId++,
+            name: `${base.name} - ${color} / ${size}`,
+            price: newPrice,
+            oldPrice,
+            cat: base.cat,
+            rating: Math.round((3.6 + ((base.id + i) % 14) * 0.1) * 10) / 10,
+            reviews: 10 + ((base.id * 7 + i * 13) % 990),
+            img: base.img,
+            badge: discountPct ? `-${discountPct}%` : null,
+          });
+        }
+      }
+
+      return extra;
+    }
+
+    const ALL_PRODUCTS = [...PRODUCTS, ...generateExtraProducts()];
+
+    function formatPrice(p) {
+      return p.toLocaleString("fr-FR") + " FCFA";
+    }
+
+    const state = {
+      activeCat: "Toutes",
+      query: "",
+      cart: {},
+    };
+
+    function getFiltered() {
+      const cat = state.activeCat;
+      const q = state.query.toLowerCase();
+      return ALL_PRODUCTS.filter((p) => {
+        const matchCat = cat === "Toutes" || p.cat === cat;
+        const matchQuery = p.name.toLowerCase().includes(q);
+        return matchCat && matchQuery;
+      });
+    }
+
+    function renderProducts(list) {
+      const grid = document.getElementById("products-grid");
+      const empty = document.getElementById("empty");
+      grid.innerHTML = "";
+
+      const heading = document.getElementById("heading-cat");
+      const count = document.getElementById("articles-count");
+      heading.textContent = state.activeCat === "Toutes" ? "Produits en vedette" : state.activeCat;
+      count.textContent = `(${list.length} articles)`;
+
+      empty.classList.toggle("hidden", list.length !== 0);
+
+      list.slice(0, 30).forEach((p) => {
+        const card = document.createElement("div");
+        card.className = "bg-white rounded-lg shadow-sm hover:shadow-md transition p-3 flex flex-col";
+        card.innerHTML = `
+          <div class="relative bg-gray-50 rounded h-28 flex items-center justify-center text-5xl mb-2">
+            <span aria-hidden="true">${p.img}</span>
+            ${p.badge ? `<span class="absolute top-1 left-1 bg-orange-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">${p.badge}</span>` : ""}
+            <button type="button" class="absolute top-1 right-1 text-gray-400 hover:text-red-500" aria-label="Ajouter aux favoris" onclick="event.stopPropagation();">
+              ♥
+            </button>
+          </div>
+          <p class="text-xs text-gray-700 line-clamp-2 flex-1 mb-1 leading-snug">${p.name}</p>
+          <div class="flex items-center gap-1 text-[11px] text-gray-500 mb-1">
+            <span aria-hidden="true">★</span>
+            ${p.rating} <span>(${p.reviews})</span>
+          </div>
+          <div class="mb-2">
+            <span class="font-bold text-sm">${formatPrice(p.price)}</span>
+            ${p.oldPrice ? `<span class="text-[11px] text-gray-400 line-through ml-1">${formatPrice(p.oldPrice)}</span>` : ""}
+          </div>
+          <button type="button" class="text-xs bg-orange-600 hover:bg-orange-700 text-white py-1.5 rounded font-medium transition" onclick="addToCart(${p.id})">
+            Ajouter au panier
+          </button>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function addToCart(id) {
+      state.cart[id] = (state.cart[id] || 0) + 1;
+      renderCartBadge();
+      renderCartItems();
+      // petit retour visuel
+      showToast("Ajouté au panier");
+    }
+
+    function changeQty(id, delta) {
+      const current = state.cart[id] || 0;
+      const next = current + delta;
+      if (next <= 0) delete state.cart[id];
+      else state.cart[id] = next;
+      renderCartItems();
+      renderCartBadge();
+      renderCartTotal();
+    }
+
+    function renderCartBadge() {
+      const badge = document.getElementById('cart-badge');
+      const count = Object.values(state.cart).reduce((a,b)=>a+b,0);
+      badge.textContent = count;
+      badge.classList.toggle('hidden', count <= 0);
+      document.getElementById('cart-title').textContent = `Mon panier`;
+    }
+
+    function renderCartItems() {
+      const wrap = document.getElementById('cart-items');
+      wrap.innerHTML = '';
+      const items = Object.entries(state.cart).map(([id, qty]) => {
+        const product = ALL_PRODUCTS.find(p => p.id === Number(id));
+        return { product, qty };
+      }).filter(x => x.product);
+
+      items.forEach(({ product, qty }) => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between gap-3';
+        row.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gray-50 rounded flex items-center justify-center text-xl">${product.img}</div>
+            <div>
+              <div class="text-xs font-medium text-gray-800">${product.name}</div>
+              <div class="text-xs text-gray-600">${formatPrice(product.price)}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" class="border rounded px-2 py-0.5 hover:bg-gray-100" aria-label="Diminuer" onclick="changeQty(${product.id}, -1)">-</button>
+            <div class="text-sm w-6 text-center">${qty}</div>
+            <button type="button" class="border rounded px-2 py-0.5 hover:bg-gray-100" aria-label="Augmenter" onclick="changeQty(${product.id}, 1)">+</button>
+          </div>
+        `;
+        wrap.appendChild(row);
+      });
+    }
+
+    function renderCartTotal() {
+      const totalEl = document.getElementById('cart-total');
+      const total = Object.entries(state.cart).reduce((sum,[id,qty])=>{
+        const product = ALL_PRODUCTS.find(p=>p.id===Number(id));
+        if(!product) return sum;
+        return sum + product.price * qty;
+      },0);
+      totalEl.textContent = formatPrice(total);
+    }
+
+    function showToast(msg) {
+      let t = document.getElementById('toast');
+      if(!t){
+        t = document.createElement('div');
+        t.id = 'toast';
+        t.className = 'fixed bottom-4 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-sm px-4 py-2 rounded shadow-lg z-50';
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      t.style.display = 'block';
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(()=>{ t.style.display='none'; }, 1800);
+    }
+
+    function openCart() {
+      document.getElementById('cart-drawer').classList.remove('hidden');
+      renderCartItems();
+      renderCartBadge();
+      renderCartTotal();
+    }
+
+    function closeCart() {
+      document.getElementById('cart-drawer').classList.add('hidden');
+    }
+
+    // init
+    (function init() {
+      const select = document.getElementById('cat-select');
+      select.innerHTML = `<option value="Toutes">Toutes les catégories</option>` +
+        CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
+
+      state.activeCat = 'Toutes';
+
+      const search = document.getElementById('search');
+      search.addEventListener('input', () => {
+        state.query = search.value;
+        renderProducts(getFiltered());
+      });
+
+      select.addEventListener('change', () => {
+        state.activeCat = select.value;
+        renderProducts(getFiltered());
+      });
+
+      renderProducts(getFiltered());
+      renderCartBadge();
+      renderCartItems();
+      renderCartTotal();
+    })();
+  </script>
+</body>
+</html>
+
+
